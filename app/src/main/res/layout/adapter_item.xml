@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/subjectIdTextView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:gravity="center"
+        android:hint="@string/Subject_id"
+        android:background="@color/light_blue"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="3dp"/>
+
+    <TextView
+        android:id="@+id/subjectNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:hint="@string/Subject_name"
+        android:background="@color/white"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="3dp"/>
+
+    <Button
+        android:id="@+id/updateSubjectButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/purple_500"
+        android:gravity="center"
+        android:text="@string/update"
+        android:textAllCaps="false"
+        android:onClick="updateSubjectOnClickHandler"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="3dp"/>
+
+    <Button
+        android:id="@+id/locateSubjectButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/purple_500"
+        android:gravity="center"
+        android:text="@string/locate"
+        android:textAllCaps="false"
+        android:onClick="locateSubjectOnClickHandler"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="3dp"/>
+
+    <Button
+        android:id="@+id/deleteUserButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/red"
+        android:gravity="center"
+        android:text="@string/delete"
+        android:onClick="deleteSubjectOnClickHandler"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="3dp"/>
+
+</LinearLayout>

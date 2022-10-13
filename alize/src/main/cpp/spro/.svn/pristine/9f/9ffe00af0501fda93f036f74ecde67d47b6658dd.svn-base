@@ -1,0 +1,21 @@
+@c
+@c index.texi -- SPro Reference Manual
+@c
+@c Copyright (C) 2003 Guillaume Gravier (guig@irisa.fr)
+@c
+@c $Author$
+@c $Date$
+@c $Revision$
+@c
+
+@c --*-- ----- --*--
+@c --*-- Index --*--
+@c --*-- ----- --*--
+@node Index, , Changes, Top
+@unnumbered Index
+
+@printindex cp
+
+@c Local Variables:
+@c ispell-local-dictionary: "american"
+@c End:

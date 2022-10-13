@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditSubjectActivity">
+
+    <Button
+        android:id="@+id/startFaceButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/start_face"
+        android:textAllCaps="false"
+        android:background="@color/ist_blue"/>
+
+    <LinearLayout
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/startFaceButton"
+        android:layout_marginTop="20dp">
+
+        <EditText
+            android:id="@+id/speaker_fname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/Subject_name"
+            android:singleLine="true"/>
+
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/name"
+        android:spinnerMode="dropdown"
+        android:dropDownHorizontalOffset="10dp"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/faceImage"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/spinner"
+        android:layout_marginTop="50dp"
+        android:adjustViewBounds="true"
+        android:visibility="invisible"
+        tools:src="@mipmap/ic_launcher" />
+
+    <Button
+        android:id="@+id/startRecordButton"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_below="@id/faceImage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/ic_record_button"/>
+
+    <Button
+        android:id="@+id/stopRecordButton"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_below="@id/faceImage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/ic_pause_button"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/timeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/faceImage"
+        android:layout_marginTop="160dp"
+        android:text="@string/default_time"
+        android:layout_centerHorizontal="true"
+        android:textSize="40dp"/>
+
+    <Button
+        android:id="@+id/submitSubjectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:textAllCaps="false"
+        android:text="@string/submit_subject"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/returnButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="@string/return_button"
+        android:textAllCaps="false"
+        android:background="@color/ist_blue"/>
+
+</RelativeLayout>

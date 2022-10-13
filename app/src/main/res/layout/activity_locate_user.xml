@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LocateUserActivity"
+    android:layout_centerHorizontal="true">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutId"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/subject_text"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleTextView"
+            android:text="@string/Subject_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/faceImageView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/nameTextView"
+            android:layout_marginTop="20dp"
+            android:adjustViewBounds="true"
+            tools:src="@mipmap/ic_launcher" />
+
+        <LinearLayout
+            android:id="@+id/linearLayoutButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/faceImageView"
+            android:orientation="vertical"
+            android:layout_marginTop="50dp">
+
+            <Button
+                android:id="@+id/start_detection_button"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:background="@color/ist_blue"
+                android:text="@string/start_process"
+                android:textAllCaps="false"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/test_localization_button"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="@string/start_localization"
+                android:textStyle="bold"
+                android:background="@color/ist_blue"
+                android:layout_marginTop="10dp"
+                android:textAllCaps="false"/>
+
+            <Button
+                android:id="@+id/test_recognition_button"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="@string/start_recognition"
+                android:textStyle="bold"
+                android:background="@color/ist_blue"
+                android:layout_marginTop="10dp"
+                android:textAllCaps="false"/>
+
+            <Button
+                android:id="@+id/stop_detection_button"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="@string/stop_process"
+                android:textStyle="bold"
+                android:background="@color/red"
+                android:layout_marginTop="10dp"
+                android:textAllCaps="false"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/ipTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearLayoutButtons"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="@string/ip_text" />
+
+        <TextView
+            android:id="@+id/finalResultTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ipTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="@string/holding_state"
+            android:textAllCaps="true"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/switchTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/finalResultTV"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="@string/RecognitionMode" />
+
+        <LinearLayout
+            android:id="@+id/linearLayoutSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/switchTitle"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/parallelMode"
+                android:layout_marginEnd="10dp"/>
+
+            <Switch
+                android:id="@+id/recognition_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/serialMode" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/returnLocButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/ist_blue"
+            android:text="@string/return_button"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:background="@color/grey"/>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutLog"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/light_blue"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/connectionStatusTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/connectionState"
+            android:textAlignment="center"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/faceStatusTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/connectionStatusTV"
+            android:layout_marginTop="20dp"
+            android:text="@string/faceState"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/speakerStatusTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/speakerState"
+            android:textAlignment="center"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/faceStatusTV"/>
+
+        <TextView
+            android:id="@+id/logTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/clearLogButton"
+            android:layout_below="@id/speakerStatusTV"
+            android:layout_marginTop="20dp"
+            android:gravity="bottom"
+            android:lineSpacingExtra="5dp"
+            android:padding="10dp"
+            android:scrollbars="vertical"
+            android:text="@string/log_text"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/clearLogButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/ist_blue"
+            android:text="@string/clear_log"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

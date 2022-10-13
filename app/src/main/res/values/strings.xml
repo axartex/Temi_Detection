@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">Temi_app_Marco</string>
+    <string name="pitch_text">Pitch Test</string>
+    <string name="holding_state">Holding</string>
+    <string name="connected_state">Connected!</string>
+    <string name="ip_text">Ip:…</string>
+    <string name="subject_text">Subject Info:</string>
+    <string name="Face_Button">Face Recognition</string>
+    <string name="detection_button">Detection Mode</string>
+    <string name="tracking_button">User Tracking</string>
+    <string name="Create_Subject_Button">Create Subject</string>
+    <string name="Subject_name">Subject Name</string>
+    <string name="Subject_id">Subject Id</string>
+    <string-array name="gender_array">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+    <string name="start_face">Start Face Recognition</string>
+    <string name="repeat_face">Repeat Face Recognition</string>
+    <string name="submit_subject">Submit</string>
+    <string name="return_button">Return</string>
+    <string name="subject_exist">This name already exist!</string>
+    <string name="unknown_face">Unknown Face Detected</string>
+    <string name="face_recognized">User Face Detected</string>
+    <string name="record_start">Audio Record Started</string>
+    <string name="record_complete">Audio Recording Complete</string>
+    <string name="record_error">There was an error with the record</string>
+    <string name="default_time">00:00:00</string>
+    <string name="verification_mode">Verification</string>
+    <string name="identification_mode">Identification</string>
+    <string name="no_users_created">There are no subjects in the system.</string>
+    <string name="delete_subjects">Delete all Subjects</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="locate">Locate</string>
+    <string name="start_process">Start Detection</string>
+    <string name="start_localization">Start Localization</string>
+    <string name="start_recognition">Start Recognition</string>
+    <string name="stop_process">Stop Detection</string>
+    <string name="clear_log">Clear</string>
+    <string name="log_text">Log Text Example</string>
+    <string name="connectionState">Connection State:</string>
+    <string name="faceState">Face Recognition State:</string>
+    <string name="speakerState">Speaker Recognition State:</string>
+    <string name="runningState">Running</string>
+    <string name="finishedState">Found</string>
+    <string name="droppedState">Dropped</string>
+    <string name="locateState">Locating</string>
+    <string name="reconState">Recognizing</string>
+    <string name="serialMode">Serial</string>
+    <string name="parallelMode">Parallel</string>
+    <string name="RecognitionMode">Recognition Mode</string>
+</resources>

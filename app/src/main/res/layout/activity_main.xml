@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditSubjectActivity">
+
+    <LinearLayout
+        android:id="@+id/list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:orientation="vertical"
+        android:background="@color/light_blue">
+
+        <ListView
+            android:id="@+id/subjectListView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/noUsers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/no_users_created"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/create_subject_button"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@string/Create_Subject_Button"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:background="@color/ist_blue"/>
+
+        <Button
+            android:id="@+id/delete_all_subjects_button"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_subjects"
+            android:textStyle="bold"
+            android:background="@color/red"
+            android:layout_marginTop="10dp"
+            />
+
+        <Button
+            android:id="@+id/printResults"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="Print Results"
+            android:textStyle="bold"
+            android:background="@color/grey"
+            android:layout_marginTop="10dp"
+            />
+
+        <LinearLayout
+            android:id="@+id/testConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/connectON"
+                android:layout_height="wrap_content"
+                android:layout_width="145dp"
+                android:text="ODAS ON"
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/connectOFF"
+                android:layout_height="wrap_content"
+                android:layout_width="145dp"
+                android:text="ODAS OFF"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView_IP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/buttons"
+        android:layout_marginTop="30dp"
+        android:text="@string/ip_text" />
+
+
+    <TextView
+        android:id="@+id/textView_debug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/textView_IP"
+        android:layout_marginTop="30dp"
+        android:text="@string/holding_state"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/ISTImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_IP"
+        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:visibility="visible"
+        android:src="@drawable/ist_logo" />
+
+</RelativeLayout>
