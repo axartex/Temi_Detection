@@ -160,7 +160,7 @@ public class ODASConnection {
                         y = Double.parseDouble(local_direction[i].substring(bk4+5, bk5-2));
                         z = Double.parseDouble(local_direction[i].substring(bk5+5, bk6-2));
                         soundSources[i-3] = SoundSource.getSource(x,y,z);
-                        Log.i(TAG, soundSources[i-3].toString());
+                        //Log.i(TAG, soundSources[i-3].toString());
                         if(k<10000){
                             ODAS_Output[k][i-3] = soundSources[i-3].getAzimuth();
                         }else {

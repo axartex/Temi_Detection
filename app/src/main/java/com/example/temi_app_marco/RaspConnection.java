@@ -30,6 +30,10 @@ public class RaspConnection{
         return connection;
     }
 
+    public boolean returnState(){
+        return !(connection.clientSocket == null);
+    }
+
     public void startODAS(){
         try {
             sendMessage("ON");

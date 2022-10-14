@@ -202,6 +202,7 @@ public class EditSubjectActivity extends AudioRecordActivity implements OnFaceRe
     public void onFaceRecognized(@NonNull List<ContactModel> contactModelList) {
         if(contactModelList.isEmpty()){
             Log.i(TAG, "onFaceRecognized: User Left");
+            TemiTools.startFaceRecognition(robot, EditSubjectActivity.this);
             return;
         }
         String imageKey = null;

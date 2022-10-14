@@ -102,11 +102,12 @@ public class LocateUserActivity extends AudioRecordActivity implements
     //private final int REQUEST_MICROPHONE = 23;
     public static String SERVER_IP = "";
     private final int PORT = 6000;
-    private final boolean MOVE_ALLOWED = false;
+    private final boolean MOVE_ALLOWED = true;
     private static final double FACE_THRESHOLD = 0.7;
     private static final double VOICE_THRESHOLD = 50;
     private static final double BETA = 0.3;
     private boolean isTurning;
+    private boolean firstDetection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +146,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
 
         recognitionMode = false;
         noStopping = true;
+        firstDetection = true;
 
         subjectNameTV = (TextView) findViewById(R.id.nameTextView);
         subjectFaceIV = (ImageView) findViewById(R.id.faceImageView);
@@ -246,6 +248,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
         if(contactModelList.isEmpty()){
             Log.i(TAG, "onFaceRecognized: User Left");
             printLog(FaceTAG, "User Left");
+            TemiTools.startFaceRecognition(robot, LocateUserActivity.this);
             return;
         }
         String msg_text;
@@ -297,12 +300,29 @@ public class LocateUserActivity extends AudioRecordActivity implements
         {
             return;
         }
-        String message = "onDetectionData: User Detected" + String.valueOf(detectionData.getDistance());
+        double userAngle = (detectionData.getAngle()*180)/Math.PI;
+        String message = "onDetectionData: User Detected" + String.valueOf(detectionData.getDistance()) +
+                "\nAngle: " + String.valueOf(userAngle);
         Log.i(TAG, message);
         printLog("", message);
         detectedUser = detectionData;
         if(inLocalization){
-            inMovement = true;
+            if(!firstDetection) {
+                firstDetection = false;
+                TemiTools.stopMovement(robot);
+                isTurning = true;
+                TemiTools.rotateBy(robot, (int) Math.round(userAngle), 1);
+                message = "onDetectionData: Turn By: " + String.valueOf(userAngle);
+                Log.i(TAG, message);
+                printLog("", message);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        inMovement = true;
+                    }
+                },5000); //Delay 5s
+            }
             if(detectedUser.getDistance() > 1 && !aborted){
                 return;
             }
@@ -361,7 +381,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
         }
         Log.i(TAG, "onRecordStopped:" + result);
         printLog(VoiceTAG, result);
-        result = getResources().getString(R.string.faceState) + result;
+        result = getResources().getString(R.string.speakerState) + result;
         speakerRecTV.setText(result);
 
         try {
@@ -391,9 +411,12 @@ public class LocateUserActivity extends AudioRecordActivity implements
         switch (v.getId())
         {
             case R.id.start_detection_button:
+                inRecognition = true;
+                inLocalization = true;
                 start_detection();
                 break;
             case R.id.test_localization_button:
+                inLocalization = true;
                 printLog(DetectionTAG, getResources().getString(R.string.locateState));
                 resultTV.setText(getResources().getString(R.string.locateState));
                 handler.postDelayed(new Runnable() {
@@ -404,6 +427,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
                 },5000); //Delay 5s
                 break;
             case R.id.test_recognition_button:
+                inRecognition = true;
                 printLog(DetectionTAG, getResources().getString(R.string.reconState));
                 resultTV.setText(getResources().getString(R.string.reconState));
                 TemiTools.toggleDetectionModeWithDistance(robot, 2.0f, true,LocateUserActivity.this);
@@ -424,10 +448,16 @@ public class LocateUserActivity extends AudioRecordActivity implements
     }
 
     private void recognition(){
+        if(!inRecognition){
+            return;
+        }
         if(!robot.isSelectedKioskApp()){
             robot.requestToBeKioskApp();
         }
-        inRecognition = true;
+        String faceText = getResources().getString(R.string.faceState);
+        faceRecTV.setText(faceText);
+        String speakerText = getResources().getString(R.string.speakerState);
+        speakerRecTV.setText(speakerText);
         TemiTools.startFaceRecognition(robot, LocateUserActivity.this);
         start_record();
         printLog(RecognitionTAG, getResources().getString(R.string.record_start));
@@ -437,11 +467,6 @@ public class LocateUserActivity extends AudioRecordActivity implements
             public void run() {
                 stop_record();
                 printLog(RecognitionTAG, getResources().getString(R.string.record_complete));
-        /*while (inRecognition){
-            if(totalFRec > 10){
-                break;
-            }
-        }*/
                 if(!recognitionMode){
                     recognitionFusion();
                 }else {
@@ -502,26 +527,25 @@ public class LocateUserActivity extends AudioRecordActivity implements
         }
     }
 
-    //TODO: TEST ABORTION
     private void localization() {
-        raspConnection.startODAS();
-        inLocalization = true;
-        conStatus = connection.getStatus();
-        /*if(!conStatus){
+        if(!inLocalization){
+            return;
+        }
+        if(!raspConnection.returnState()){
             Log.i(TAG, "Connection OFF!");
             String textViewText = getResources().getString(R.string.connectionState) +
                     getResources().getString(R.string.holding_state);
             connectionTV.setText(textViewText);
             printLog(ConnectionTAG, "Connection OFF!");
             return;
-        }*/
+        }
+        raspConnection.startODAS();
         String textViewText = getResources().getString(R.string.connectionState) + getResources().getString(R.string.connected_state);
         connectionTV.setText(textViewText);
         if(detectedUser != null){
             TemiTools.rotateBy(robot,180,1);
             detectedUser = null;
         }
-        //TODO: CHECK HOW DISTANCE WORKS AND PROBABLY USE ANOTHER WAY TO DETECT WITHIN 2 METERS (DO IT WITH TEMI)
         TemiTools.toggleDetectionModeWithDistance(robot, 2.0f, true,LocateUserActivity.this);
         printLog(LocalizationTAG, "Locating");
         locateThread = new Thread(new LocateThread());
@@ -531,7 +555,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         recognitionMode = isChecked;
-        double localThreshold = isChecked ? 30 : 60; //TODO: ADJUST THESE VALUES
+        double localThreshold = isChecked ? 30 : 50;
         setThreshold(localThreshold);
     }
 
@@ -541,31 +565,33 @@ public class LocateUserActivity extends AudioRecordActivity implements
         double turnByAngle;
         @Override
         public void run() {
-            while(inLocalization && !inMovement){
-                if(isTurning){
-                    //Log.i(LocalizationTAG, "isTurning! Wait Please");
-                    continue;
-                }
-                mostProbable = soundSources.getMostProbableSource();
-                azimuth = mostProbable.getAzimuth();
-                turnByAngle = azimuth - offset;
-                turnByAngle = tools.wrapTo180(turnByAngle);
+            while(inLocalization){
+                if(!inMovement) {
+                    conStatus = connection.getStatus();
+                    if (isTurning || !conStatus) {
+                        //Log.i(LocalizationTAG, "isTurning! Wait Please");
+                        continue;
+                    }
+                    mostProbable = soundSources.getMostProbableSource();
+                    azimuth = mostProbable.getAzimuth();
+                    turnByAngle = azimuth - offset;
+                    turnByAngle = tools.wrapTo180(turnByAngle);
                 /*Log.i(LocalizationTAG, "Rotate by: " + String.valueOf(turnByAngle) + "\nRead: "
                         + String.valueOf(azimuth));*/
-                if(Math.abs(turnByAngle) > 5){ //TODO: ADJUST THIS VALUE
-                    //Log.i(LocalizationTAG, "Rotate by: " + String.valueOf((int) Math.round(turnByAngle)));
-                    offset = offset + (int) Math.round(turnByAngle);
-                    connection.startTurning(offset);
-                    raspConnection.stopODAS();
-                    isTurning = true;
-                    TemiTools.rotateBy(robot, (int) Math.round(turnByAngle),1);
-                }
-                else if(MOVE_ALLOWED){
+                    if (Math.abs(turnByAngle) > 5) {
+                        //Log.i(LocalizationTAG, "Rotate by: " + String.valueOf((int) Math.round(turnByAngle)));
+                        offset = offset + (int) Math.round(turnByAngle);
+                        connection.startTurning(offset);
+                        raspConnection.stopODAS();
+                        isTurning = true;
+                        TemiTools.rotateBy(robot, (int) Math.round(turnByAngle), 1);
+                    } else if (MOVE_ALLOWED) {
+                        TemiTools.moveForward(robot);
+                        isTurning = true;
+                    }
+                }else if(MOVE_ALLOWED){
                     TemiTools.moveForward(robot);
                 }
-            }
-            while(inMovement && MOVE_ALLOWED){
-                TemiTools.moveForward(robot);
             }
             TemiTools.tiltScreenTo(robot, (int) Math.round(mostProbable.getElevation()),1); //TODO: Test this
             soundSources.resetConfidence(mostProbable,5);//TODO: ADJUST THIS VALUE
@@ -613,9 +639,13 @@ public class LocateUserActivity extends AudioRecordActivity implements
         }
         locateThread = null;
         TemiTools.stopFaceRecognition(robot, LocateUserActivity.this);
+        resetFaceRecognitionProb();
         TemiTools.toggleDetectionModeWithDistance(robot, 2.0f, false,LocateUserActivity.this);
-        raspConnection.stopODAS();
-        soundSources.resetConfidence(new SoundSource(0,0),180);//TODO: ADJUST THIS VALUE
+        conStatus = connection.getStatus();
+        if(conStatus) {
+            raspConnection.stopODAS();
+        }
+        soundSources.resetConfidence(new SoundSource(0,0),180);
         offset = 0;
         detectedUser = null;
         if(isRecording){
@@ -661,7 +691,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
             if(i == input){
                faceRecognized[i]++;
             }
-            faceRecognized[i] /= ++localTotalFRec;
+            faceRecognized[i] /= localTotalFRec;
         }
         totalFRec = localTotalFRec;
     }
@@ -694,7 +724,15 @@ public class LocateUserActivity extends AudioRecordActivity implements
                     break;
             }
         }else if(type.equals(TYPE_SKID_JOY)){
-            Log.i("MOVEMENT", "SkidJoy"+status);
+            switch (status) {
+                case STATUS_COMPLETE:
+                case STATUS_ABORT:
+                    isTurning = false;
+                    break;
+                default:
+                    break;
+            }
+            /*Log.i("MOVEMENT", "SkidJoy"+status);
             if (STATUS_ABORT.equals(status)) {
                 if(inMovement){
                     aborted = true;
@@ -712,7 +750,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
                 if(inDetection){
                     localization();
                 }
-            }
+            }*/
         }
     }
 }
