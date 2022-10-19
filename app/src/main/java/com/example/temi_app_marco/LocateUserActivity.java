@@ -108,6 +108,8 @@ public class LocateUserActivity extends AudioRecordActivity implements
     private static final double BETA = 0.3;
     private boolean isTurning;
     private boolean firstDetection;
+    private boolean isMoving;
+    private boolean isDetecting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +129,8 @@ public class LocateUserActivity extends AudioRecordActivity implements
         offset = 0;
         match = false;
         isTurning = false;
+        isMoving = false;
+        isDetecting = false;
 
         robot = Robot.getInstance();
         robot.addOnRequestPermissionResultListener(this);
@@ -307,23 +311,32 @@ public class LocateUserActivity extends AudioRecordActivity implements
         printLog("", message);
         detectedUser = detectionData;
         if(inLocalization){
-            if(!firstDetection) {
-                firstDetection = false;
-                TemiTools.stopMovement(robot);
+            if(firstDetection) {
                 isTurning = true;
-                TemiTools.rotateBy(robot, (int) Math.round(userAngle), 1);
+                inMovement = true;
+                firstDetection = false;
+                isDetecting = true;
+                TemiTools.stopMovement(robot);
+                Handler handler2 = new Handler();
+                handler2.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        TemiTools.rotateBy(robot, (int) Math.round(userAngle), 1);
+                        raspConnection.stopODAS();
+                    }
+                },1000); //Delay 1s
                 message = "onDetectionData: Turn By: " + String.valueOf(userAngle);
                 Log.i(TAG, message);
                 printLog("", message);
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        inMovement = true;
-                    }
-                },5000); //Delay 5s
             }
             if(detectedUser.getDistance() > 1 && !aborted){
+                if(Math.abs(userAngle) > 5 && !isMoving && !isTurning){
+                    isTurning = true;
+                    TemiTools.rotateBy(robot, (int) Math.round(userAngle), 1);
+                    raspConnection.stopODAS();
+                }else if(Math.abs(userAngle) < 5){
+                    isDetecting = false;
+                }
                 return;
             }
             inLocalization = false;
@@ -337,10 +350,17 @@ public class LocateUserActivity extends AudioRecordActivity implements
             TemiTools.toggleDetectionModeWithDistance(robot, 2.0f, false,LocateUserActivity.this);
             printLog(LocalizationTAG, "User Detected");
             locateThread = null;
-
-            if(inDetection){
-                recognition();
-            }
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    TemiTools.rotateBy(robot, (int) Math.round(userAngle), 1);
+                    raspConnection.stopODAS();
+                    if(inDetection){
+                        recognition();
+                    }
+                }
+            },1000); //Delay 1s
         }
     }
 
@@ -565,35 +585,45 @@ public class LocateUserActivity extends AudioRecordActivity implements
         double turnByAngle;
         @Override
         public void run() {
-            while(inLocalization){
-                if(!inMovement) {
-                    conStatus = connection.getStatus();
-                    if (isTurning || !conStatus) {
-                        //Log.i(LocalizationTAG, "isTurning! Wait Please");
-                        continue;
-                    }
-                    mostProbable = soundSources.getMostProbableSource();
-                    azimuth = mostProbable.getAzimuth();
-                    turnByAngle = azimuth - offset;
-                    turnByAngle = tools.wrapTo180(turnByAngle);
+            while(inLocalization && firstDetection){
+                conStatus = connection.getStatus();
+                if(isTurning || isMoving){
+                    //Log.i(LocalizationTAG, "isTurning! Wait Please");
+                    continue;
+                }
+                if(!conStatus){
+                    raspConnection.startODAS();
+                    continue;
+                }
+                mostProbable = soundSources.getMostProbableSource();
+                azimuth = mostProbable.getAzimuth();
+                turnByAngle = azimuth - offset;
+                turnByAngle = tools.wrapTo180(turnByAngle);
                 /*Log.i(LocalizationTAG, "Rotate by: " + String.valueOf(turnByAngle) + "\nRead: "
                         + String.valueOf(azimuth));*/
-                    if (Math.abs(turnByAngle) > 5) {
-                        //Log.i(LocalizationTAG, "Rotate by: " + String.valueOf((int) Math.round(turnByAngle)));
-                        offset = offset + (int) Math.round(turnByAngle);
-                        connection.startTurning(offset);
-                        raspConnection.stopODAS();
-                        isTurning = true;
-                        TemiTools.rotateBy(robot, (int) Math.round(turnByAngle), 1);
-                    } else if (MOVE_ALLOWED) {
-                        TemiTools.moveForward(robot);
-                        isTurning = true;
-                    }
+                if(Math.abs(turnByAngle) > 5){
+                    //Log.i(LocalizationTAG, "Rotate by: " + String.valueOf((int) Math.round(turnByAngle)));
+                    offset = offset + (int) Math.round(turnByAngle);
+                    offset = tools.wrapTo180(offset);
+                    connection.startTurning(offset);
+                    raspConnection.stopODAS();
+                    isTurning = true;
+                    TemiTools.rotateBy(robot, (int) Math.round(turnByAngle),1);
                 }else if(MOVE_ALLOWED){
-                    TemiTools.moveForward(robot);
+                    raspConnection.stopODAS();
+                    TemiTools.moveForward(robot, true);
+                    isMoving = true;
                 }
             }
-            TemiTools.tiltScreenTo(robot, (int) Math.round(mostProbable.getElevation()),1); //TODO: Test this
+            while(inMovement && MOVE_ALLOWED){
+                if(isTurning || isMoving || isDetecting){
+                    continue;
+                }
+                raspConnection.stopODAS();
+                TemiTools.moveForward(robot, false);
+                isMoving = true;
+            }
+            //TemiTools.tiltScreenTo(robot, (int) Math.round(mostProbable.getElevation()),1); //TODO: Test this
             soundSources.resetConfidence(mostProbable,5);//TODO: ADJUST THIS VALUE
         }
     }
@@ -628,6 +658,9 @@ public class LocateUserActivity extends AudioRecordActivity implements
         inRecognition = false;
         inMovement = false;
         isTurning = false;
+        isMoving = false;
+        firstDetection = true;
+        isDetecting = false;
         connection.stopTurning();
         TemiTools.stopMovement(robot);
         if(locateThread != null) {
@@ -727,7 +760,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
             switch (status) {
                 case STATUS_COMPLETE:
                 case STATUS_ABORT:
-                    isTurning = false;
+                    isMoving = false;
                     break;
                 default:
                     break;

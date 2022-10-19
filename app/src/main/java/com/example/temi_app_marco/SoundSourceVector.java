@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 public class SoundSourceVector {
     private double maximum = 0;
-    private int maximumId = 0;
+    private int maximumId = 179;
     private SoundSource[] items;
     private static SoundSourceVector sourceVector = null;
     private static final int VECTOR_SIZE = 360;
@@ -89,6 +89,9 @@ public class SoundSourceVector {
 
     //After analysing a SoundSource, you should reset its confidence in order to analyse other sources
     public void resetConfidence(SoundSource soundSource, double radius){
+        if(soundSource == null){
+            return;
+        }
         double azimuth = soundSource.getAzimuth();
         double angle, finConfidence;
         maximum = 0;

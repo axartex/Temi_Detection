@@ -128,11 +128,11 @@ public class TemiTools {
         robot.tiltAngle(degrees, speed);
     }
 
-    public static void moveForward(Robot robot){
+    public static void moveForward(Robot robot, boolean smart){
         long t = System.currentTimeMillis();
         long end = t + 500;
         while (System.currentTimeMillis() < end){
-            robot.skidJoy(1,0, true);
+            robot.skidJoy(0.5f,0, smart);
         }
     }
 
