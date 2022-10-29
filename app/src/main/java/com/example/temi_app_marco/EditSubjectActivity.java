@@ -174,7 +174,7 @@ public class EditSubjectActivity extends AudioRecordActivity implements OnFaceRe
             if (!subjectList.isEmpty()){
                 alreadyExist = subjectList.searchName(subjectName) != null;
                 if(subject != null){
-                    alreadyExist = alreadyExist || subject.getName().equals(subjectName); //TODO: TEST THIS
+                    alreadyExist = alreadyExist && !subject.getName().equals(subjectName); //TODO: TEST THIS
                 }
                 if(alreadyExist){
                     name_text.setError(getResources().getString(R.string.subject_exist));
