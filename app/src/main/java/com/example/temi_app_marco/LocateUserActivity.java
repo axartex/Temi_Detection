@@ -502,6 +502,8 @@ public class LocateUserActivity extends AudioRecordActivity implements
                         finalResult();
                     }
                     else{
+                        inLocalization = true;
+                        firstDetection = true;
                         localization();
                     }
                 }
@@ -590,7 +592,11 @@ public class LocateUserActivity extends AudioRecordActivity implements
         raspConnection.startODAS();
         String textViewText = getResources().getString(R.string.connectionState) + getResources().getString(R.string.connected_state);
         connectionTV.setText(textViewText);
-        if(detectedUser != null){
+        if(detectedUser != null){offset = offset + 180;
+            offset = tools.wrapTo180(offset);
+            connection.startTurning(offset);
+            raspConnection.stopODAS();
+            isTurning = true;
             TemiTools.rotateBy(robot,180,1);
             detectedUser = null;
         }
