@@ -59,7 +59,7 @@
             android:layout_marginTop="10dp"
             />
 
-        <Button
+        <!--<Button
             android:id="@+id/printResults"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
@@ -67,9 +67,9 @@
             android:textStyle="bold"
             android:background="@color/grey"
             android:layout_marginTop="10dp"
-            />
+            />-->
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/testConnection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                 android:textStyle="bold"
                 android:layout_marginLeft="10dp"/>
 
-        </LinearLayout>
+        </LinearLayout>-->
 
     </LinearLayout>
 

@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.robotemi.sdk.Robot;
 import com.robotemi.sdk.listeners.OnRobotReadyListener;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -30,9 +29,9 @@ public class MainActivity extends AudioRecordActivity implements View.OnClickLis
     TextView textView_Ip, textView_noSubjects;
     Button create_subject;
     Button delete_all_subject;
-    Button print_results;
+    /*Button print_results;
     Button ODAS_ON;
-    Button ODAS_OFF;
+    Button ODAS_OFF;*/
     ListView subjectListView;
     private SubjectListAdapter adapter;
     private Subject[] subjArray;
@@ -68,14 +67,14 @@ public class MainActivity extends AudioRecordActivity implements View.OnClickLis
         delete_all_subject = (Button) findViewById(R.id.delete_all_subjects_button);
         delete_all_subject.setOnClickListener(this);
 
-        print_results = (Button) findViewById(R.id.printResults);
+        /*print_results = (Button) findViewById(R.id.printResults);
         print_results.setOnClickListener(this);
 
         ODAS_ON = (Button) findViewById(R.id.connectON);
         ODAS_ON.setOnClickListener(this);
 
         ODAS_OFF = (Button) findViewById(R.id.connectOFF);
-        ODAS_OFF.setOnClickListener(this);
+        ODAS_OFF.setOnClickListener(this);*/
 
         List<Subject> tempSubjList = subjectList.getItems();
         subjArray = new Subject[tempSubjList.size()];
@@ -96,7 +95,6 @@ public class MainActivity extends AudioRecordActivity implements View.OnClickLis
         textView_Ip.setText(textViewText);
         connection = ODASConnection.get();
         sourceVector = SoundSourceVector.get();
-        raspConnection = RaspConnection.get();
     }
 
     @Override
@@ -215,7 +213,7 @@ public class MainActivity extends AudioRecordActivity implements View.OnClickLis
                 adapter.clear();
                 updateListView();
                 break;
-            case R.id.printResults:
+            /*case R.id.printResults:
                 try {
                     tools.writeFileODAS(connection.ODAS_Output,1,MainActivity.this);
                     tools.writeFileFilter(sourceVector.SSV_Output,2,MainActivity.this);
@@ -229,7 +227,7 @@ public class MainActivity extends AudioRecordActivity implements View.OnClickLis
                 break;
             case R.id.connectOFF:
                 raspConnection.stopODAS();
-                break;
+                break;*/
             default:
                 throw new IllegalStateException("Unexpected value: " + view.getId());
         }
