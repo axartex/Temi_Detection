@@ -95,6 +95,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
     private boolean inDetection = false;
     private boolean inMovement;
     private boolean aborted;
+    private boolean faceError;
     protected Thread locateThread = null;
     //constant values
     private static final int REQUEST_CODE_FACE_START = 1;
@@ -104,7 +105,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
     private final int PORT = 6000;
     private final boolean MOVE_ALLOWED = true;
     private static final double FACE_THRESHOLD = 0.7;
-    private static final double VOICE_THRESHOLD = 50;
+    private static final double VOICE_THRESHOLD = 47;
     private static final double BETA = 0.3;
     private boolean isTurning;
     private boolean firstDetection;
@@ -131,6 +132,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
         isTurning = false;
         isMoving = false;
         isDetecting = false;
+        faceError = true;
 
         robot = Robot.getInstance();
         robot.addOnRequestPermissionResultListener(this);
@@ -255,6 +257,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
             TemiTools.startFaceRecognition(robot, LocateUserActivity.this);
             return;
         }
+        faceError = false;
         String msg_text;
         for( ContactModel contactModel : contactModelList){
             if (tools.isEmptyOrBlank(contactModel.getUserId())){
@@ -508,19 +511,44 @@ public class LocateUserActivity extends AudioRecordActivity implements
 
     //to use serial recognition the voice threshold should be lower
     private void recognition_serial(){
-        if(!voiceMatch){
+        if(faceError && recordError){
             match = false;
-            return;
+            String logText = "There was a problem with the recognition process.";
+            printLog(RecognitionTAG, logText);
         }
-        match = faceMatch;
+        else if (recordError){
+            match = faceMatch;
+            String logText = (match) ? "Match" : "No Match";
+            printLog(RecognitionTAG, logText);
+        }else if (faceError){
+            match = voiceMatch;
+            String logText = (match) ? "Match" : "No Match";
+            printLog(RecognitionTAG, logText);
+        }
+        else {
+            if (!voiceMatch) {
+                match = false;
+                return;
+            }
+            match = faceMatch;
+        }
     }
 
     private void recognitionFusion(){
         double localConfidence;
         double faceDistance;
         double voiceDistance;
-        if (recordError){
+        if(faceError && recordError){
+            match = false;
+            String logText = "There was a problem with the recognition process.";
+            printLog(RecognitionTAG, logText);
+        }
+        else if (recordError){
             match = faceMatch;
+            String logText = (match) ? "Match" : "No Match";
+            printLog(RecognitionTAG, logText);
+        }else if (faceError){
+            match = voiceMatch;
             String logText = (match) ? "Match" : "No Match";
             printLog(RecognitionTAG, logText);
         }

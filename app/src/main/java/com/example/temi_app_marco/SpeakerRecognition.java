@@ -14,7 +14,7 @@ public class SpeakerRecognition extends SimpleSpkDetSystem {
 
     private static SpeakerRecognition speakerRecognition = null;
     private final static String TAG = "Alize_System";
-    private final static double THRESHOLD = 50; //Not sure between 50 or 55 but I think its better 50
+    private final static double THRESHOLD = 47;
 
     private SpeakerRecognition(InputStream configInput, String workdirPath) throws AlizeException, IOException {
         super(configInput, workdirPath);
