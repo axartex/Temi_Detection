@@ -590,6 +590,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
             return;
         }
         raspConnection.startODAS();
+        connection.stopTurning();
         String textViewText = getResources().getString(R.string.connectionState) + getResources().getString(R.string.connected_state);
         connectionTV.setText(textViewText);
         if(detectedUser != null){offset = offset + 180;
@@ -630,6 +631,9 @@ public class LocateUserActivity extends AudioRecordActivity implements
                     continue;
                 }
                 mostProbable = soundSources.getMostProbableSource();
+                if(mostProbable == null){
+                    continue;
+                }
                 azimuth = mostProbable.getAzimuth();
                 turnByAngle = azimuth - offset;
                 turnByAngle = tools.wrapTo180(turnByAngle);
@@ -645,7 +649,8 @@ public class LocateUserActivity extends AudioRecordActivity implements
                     TemiTools.rotateBy(robot, (int) Math.round(turnByAngle),1);
                 }else if(MOVE_ALLOWED){
                     raspConnection.stopODAS();
-                    TemiTools.moveForward(robot, true);
+                    connection.stopReadings();
+                    TemiTools.moveForward(robot, false);
                     isMoving = true;
                 }
             }
@@ -654,6 +659,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
                     continue;
                 }
                 raspConnection.stopODAS();
+                connection.stopReadings();
                 TemiTools.moveForward(robot, false);
                 isMoving = true;
             }
@@ -695,7 +701,7 @@ public class LocateUserActivity extends AudioRecordActivity implements
         isMoving = false;
         firstDetection = true;
         isDetecting = false;
-        connection.stopTurning();
+        connection.stopReadings();
         TemiTools.stopMovement(robot);
         if(locateThread != null) {
             try {
@@ -794,6 +800,8 @@ public class LocateUserActivity extends AudioRecordActivity implements
             switch (status) {
                 case STATUS_COMPLETE:
                 case STATUS_ABORT:
+                    connection.stopTurning();
+                    raspConnection.startODAS();
                     isMoving = false;
                     break;
                 default:

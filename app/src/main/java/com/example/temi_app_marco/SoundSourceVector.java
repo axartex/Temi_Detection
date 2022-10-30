@@ -12,6 +12,7 @@ public class SoundSourceVector {
     private static final double MEAN = 0;
     private static final double ALPHA = 0.5;
     private static final String TAG = "OnSSVector";
+    private boolean IdAvailable = false;
     private int k = 0;
     public final double[] SSV_Output = new double[10000];
 
@@ -72,6 +73,9 @@ public class SoundSourceVector {
         }
         if(maximum > 0.3){
             maximumId = localMaximumId;
+            IdAvailable = true;
+        }else {
+            IdAvailable = false;
         }
         //Log.i(TAG, "Most Probable Angle: " + this.items[maximumId].getAzimuth() + "\n confidence: " + maximum);
         if(k<10000){
@@ -83,7 +87,10 @@ public class SoundSourceVector {
     }
 
     public SoundSource getMostProbableSource(){
-        return this.items[maximumId];
+        if(IdAvailable) {
+            return this.items[maximumId];
+        }
+        return null;
     }
 
 

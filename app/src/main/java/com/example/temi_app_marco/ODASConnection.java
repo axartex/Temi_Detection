@@ -61,6 +61,10 @@ public class ODASConnection {
         isTurning = false;
     }
 
+    public void stopReadings(){
+        isTurning = true;
+    }
+
     class ServerThread implements Runnable{
         @Override
         public void run() {
